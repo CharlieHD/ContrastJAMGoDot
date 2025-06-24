@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://bvlkyi7av3nqq"]
+
+[ext_resource type="Texture2D" uid="uid://blpgd8ug2ep7r" path="res://NOXROBO/Cubos.png" id="1_ci4lf"]
+
+[resource]
+albedo_texture = ExtResource("1_ci4lf")

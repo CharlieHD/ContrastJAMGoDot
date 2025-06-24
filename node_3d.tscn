@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://bt58rf18noifk"]
+
+[ext_resource type="Script" uid="uid://g3wqy34fqhv4" path="res://player.gd" id="1_a0tk4"]
+[ext_resource type="PackedScene" uid="uid://bqlcgs5qq6qso" path="res://NOXROBO/NOXROBOT.fbx" id="1_a202f"]
+[ext_resource type="ArrayMesh" uid="uid://ca01oa8u3nggp" path="res://obj/Floor.obj" id="3_r3fl7"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_jka67"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="PLAYER" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.28682, 0.490633, 2.40166)
+lock_rotation = true
+script = ExtResource("1_a0tk4")
+
+[node name="NOXROBOT" parent="PLAYER" instance=ExtResource("1_a202f")]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PLAYER"]
+transform = Transform3D(0.474225, 0, 0, 0, 0.496938, 0, 0, 0, 0.441093, -0.0103199, 0.333116, -0.0233653)
+visible = false
+mesh = SubResource("CapsuleMesh_jka67")
+
+[node name="Node3D" type="Node3D" parent="PLAYER"]
+transform = Transform3D(1, 0, 0, 0, 0.998366, 0.0571458, 0, -0.0571458, 0.998366, 0, 0.395229, 0)
+
+[node name="Camera3D" type="Camera3D" parent="PLAYER/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0160522, 1.13836)
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.02156, -0.0180942, 2.00954)
+mesh = ExtResource("3_r3fl7")

@@ -1,0 +1,38 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation2": {
+			"animation_length": 3.0417,
+			"bones": {
+				"Brazo derecho": {
+					"position": {
+						"0.0": [0, 0, 0],
+						"1.5": [0, 1, 0],
+						"3.0": [0, 0, 0]
+					}
+				},
+				"Brazo izquierdo": {
+					"position": {
+						"0.0": [0, 0, 0],
+						"1.5": [0, 1, 0],
+						"3.0": [0, 0, 0]
+					}
+				},
+				"Antebrazoderecho": {
+					"position": {
+						"0.0": [0, 0, 0],
+						"1.0": [0, 1, 0],
+						"3.0": [0, 0, 0]
+					}
+				},
+				"Antebrazoizquierdo": {
+					"position": {
+						"0.0": [0, 0, 0],
+						"1.0": [0, 1, 0],
+						"3.0": [0, 0, 0]
+					}
+				}
+			}
+		}
+	}
+}

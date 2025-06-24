@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://dnqr7myhjneua"]
+
+[ext_resource type="Texture2D" uid="uid://bgla7m0wcss8a" path="res://NOXROBO/Brazo.png" id="1_8e01q"]
+
+[resource]
+albedo_texture = ExtResource("1_8e01q")
