@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bt58rf18noifk"]
+[gd_scene load_steps=8 format=3 uid="uid://bt58rf18noifk"]
 
 [ext_resource type="Script" uid="uid://g3wqy34fqhv4" path="res://player.gd" id="1_a0tk4"]
 [ext_resource type="PackedScene" uid="uid://bqlcgs5qq6qso" path="res://NOXROBO/NOXROBOT.fbx" id="1_a202f"]
@@ -6,11 +6,20 @@
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_jka67"]
 
+[sub_resource type="Environment" id="Environment_r3fl7"]
+background_energy_multiplier = 1.95
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_a0tk4"]
+radius = 0.275997
+height = 0.551994
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r3fl7"]
+size = Vector3(3.85593, 0.393066, 3.72061)
+
 [node name="Node3D" type="Node3D"]
 
-[node name="PLAYER" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.28682, 0.490633, 2.40166)
-lock_rotation = true
+[node name="PLAYER" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.28682, 0.674784, 2.40166)
 script = ExtResource("1_a0tk4")
 
 [node name="NOXROBOT" parent="PLAYER" instance=ExtResource("1_a202f")]
@@ -20,12 +29,32 @@ transform = Transform3D(0.474225, 0, 0, 0, 0.496938, 0, 0, 0, 0.441093, -0.01031
 visible = false
 mesh = SubResource("CapsuleMesh_jka67")
 
-[node name="Node3D" type="Node3D" parent="PLAYER"]
-transform = Transform3D(1, 0, 0, 0, 0.998366, 0.0571458, 0, -0.0571458, 0.998366, 0, 0.395229, 0)
+[node name="CameraPivot" type="Node3D" parent="PLAYER"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.955978, 0.29344, 0, -0.29344, 0.955978, 0, 0.424442, 0.122559)
 
-[node name="Camera3D" type="Camera3D" parent="PLAYER/Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0160522, 1.13836)
+[node name="Camera3D" type="Camera3D" parent="PLAYER/CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, 0, 0.116404, 0.7299)
+environment = SubResource("Environment_r3fl7")
+current = true
 
-[node name="Floor" type="MeshInstance3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PLAYER"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0300463, 0.236888, -0.0226357)
+shape = SubResource("CapsuleShape3D_a0tk4")
+
+[node name="jumpTimer" type="Timer" parent="PLAYER"]
+wait_time = 0.45
+one_shot = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="Floor" type="MeshInstance3D" parent="StaticBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.02156, -0.0180942, 2.00954)
 mesh = ExtResource("3_r3fl7")
+skeleton = NodePath("../../root/@EditorNode@21031/@Panel@14/@VBoxContainer@15/DockHSplitLeftL/DockHSplitLeftR/DockHSplitMain/@VBoxContainer@26/DockVSplitCenter/@VSplitContainer@54/@VBoxContainer@55/@EditorMainScreen@102/MainScreen/@CanvasItemEditor@11296/@VSplitContainer@10948/@HSplitContainer@10950/@HSplitContainer@10952/@Control@10953/@SubViewportContainer@10954/@SubViewport@10955/Node3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.99002, 0.279308, 2.05046)
+shape = SubResource("BoxShape3D_r3fl7")
+
+[connection signal="timeout" from="PLAYER/jumpTimer" to="PLAYER" method="_on_jump_timer_timeout"]

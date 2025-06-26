@@ -1,34 +1,63 @@
-extends RigidBody3D
+extends CharacterBody3D
 
 @export_group("Camera")
-@export_group(0.0, 1.0) var mouse_sensitivity := 0.25
+@export_enum("mouse", "keys") var camera_mode = 1
+@export_range(0.0, 1.0) var mouse_sensitivity := 0.25
+@export var cam_speed := 0.05
 
-var _camera_input_direction := Vector2.ZERO
+@export_group("physics")
+@export var speed := 1.0
+@export var speed_interval := 0.5
+@export var max_speed := 5.0
+@export var jump_height := 15
+@export var gravity := 2.5
 
-@onready var _camera_pivot: Node3D = %CameraPivot
+@export_group("visual")
+@export var tilt_force := 1
 
+var current_jump_force := 0.0
+var is_mouse_moving := false
+var can_jump := false
+var is_jumping := false
+var default_position := Vector3(0.0 ,0.116, 0.73)
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("left_click"):
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		if event.is_action_pressed("ui_cancel"):
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+func _physics_process (_delta: float) -> void:
+	# camera + movement code
+	var move_axis = Input.get_vector("left", "right", "forward", "backward")
+	if camera_mode == 1:
+		var Cam_axis = Input.get_vector("right_camera", "left_camera", "down_camera", "up_camera")
+		rotate_object_local(Vector3(0, 1, 0) ,Cam_axis.x * cam_speed)
+		$CameraPivot.rotate_x(Cam_axis.y * cam_speed)
+		$NOXROBOT.rotation_degrees.x = speed * move_axis.y
+	if move_axis:
+		$NOXROBOT.rotation_degrees.z = tilt_force * -move_axis.x
+		if abs(speed) < max_speed:
+			speed += speed_interval
+		velocity = transform.basis.z * speed * move_axis.y
+		transform = transform.orthonormalized()
+		#velocity.x = move_axis.x * speed
+	else:
+		$NOXROBOT.rotation_degrees.z = lerp($NOXROBOT.rotation_degrees.z, 0.0, 0.5)
+		speed = lerp(speed, 0.0, 0.05)
+		velocity = velocity.move_toward(Vector3.ZERO, 0.5)
+	# controls jump behavior
+	if is_on_floor():
+		can_jump = true
 		
-func _unhandled_input(event: InputEvent) -> void:
-	var is_camera_motion := (
-		event is InputEventMouseMotion and
-		Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
-	)
-	if is_camera_motion:
-		_camera_input_direction = event.screen_relative *
-		mouse_sensitivity
-		
-		func _physics_process (delta: float) -> void:
-			_camera_pivot.rotation.x += _camera_input_direction.y *
-			delta
-			_camera_pivot.rotation.x = clamp(_camera_pivot.rotation.x,
-			-PI / 6.0, PI / 3.0)
-			_camera_pivot.rotation.y -= _camera_input_direction.y *
-			delta
-			
-			_camera_input_direction = Vector2.ZERO
+	else:
+		velocity.y -= gravity
+		can_jump = false
+	
+	if can_jump and Input.is_action_just_pressed("jump"):
+		current_jump_force = jump_height
+		is_jumping = true
+		$jumpTimer.start()
+	
+	if is_jumping:
+		velocity.y = current_jump_force
+		current_jump_force -= 1.0
+	
+	move_and_slide()
+
+func _on_jump_timer_timeout() -> void:
+	is_jumping = false
